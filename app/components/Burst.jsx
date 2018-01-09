@@ -94,7 +94,7 @@ export default class extends React.Component {
                         stroke="#fff"
                         fill={color((node.children ? node.data : node.parent.data).name)}
                         fillRule="evenodd"
-                        onClick={() => this.handleClick(node)}
+                        onClick={() => {console.log('nodeData',node.data);this.handleClick(node)}}
                         key={`node-${i}`}
                       />
                     ))}
