@@ -2,9 +2,18 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import d3 from 'd3'
 import rt from './vanillaData'
+import store from '../store'
+
+//import {updateVanillaPartition} from '../reducers/VanillaBurst'
 
 export default class MyGraphComponent extends React.Component {
-  componentDidMount() {    
+  constructor(props) {
+    super(props)
+  }
+  componentDidMount() {  
+
+            let {updateVanillaPartition} = this.props
+
             var width = 960,
             height = 700,
             radius = Math.min(width, height) / 2;
@@ -53,6 +62,7 @@ export default class MyGraphComponent extends React.Component {
             .text(function(d) { return d.name; });
 
             function click(d) {
+            updateVanillaPartition(d)
             // fade out all text elements
             text.transition().attr("opacity", 0);
 
@@ -98,9 +108,8 @@ export default class MyGraphComponent extends React.Component {
   }
   
   render() {
-    console.log(this)
     return (
       <svg ref={(elem) => { this.svg = elem; }} />
-    );
+    )
   }
 }

@@ -13,11 +13,13 @@ import {render} from 'react-dom'
 import {connect, Provider} from 'react-redux'
 
 import store from './store'
-import Jokes from './components/Jokes'
 import Login from './components/Login'
 import WhoAmI from './components/WhoAmI'
 import NotFound from './components/NotFound'
 import VanillaBurst from './components/VanillaBurst'
+
+import HomeContainer from './containers/HomeContainer'
+
 
 const ExampleApp = connect(
   ({ auth }) => ({ user: auth })
@@ -35,8 +37,8 @@ render(
   <Provider store={store}>
     <Router history={browserHistory}>
       <Route path="/" component={ExampleApp}>
-        <IndexRedirect to="/jokes" />
-        <Route path="/jokes" component={Jokes} />
+        <IndexRedirect to="/home" />
+        <Route path="/home" component={HomeContainer} />
         <Route path="/vanillaBurst" component={VanillaBurst} />
       </Route>
       <Route path='*' component={NotFound} />
