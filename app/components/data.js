@@ -1,8 +1,47 @@
-export default {
-  "name": "happy",
+export default 
+
+{
+  "name": "middle",
   "children": [
-    { "name":"superHappy", "size" : 50},
-    { "name":"mostlyHappy", "size" : 50}
+    { 
+      "name":"happy",
+      "children" : [
+         {
+           "name": "extrasuperHappy",
+           "size": 50
+	     },
+         {
+           "name": "a little happy",
+           "size": 50
+         }
+       ]
+    },
+    { 
+      "name":"sad",
+      "children" : [
+         {
+           "name": "extraSad",
+           "size": 50
+	     },
+         {
+           "name": "a littles",
+           "size": 50
+         }
+       ]
+    },
+    { 
+      "name":"angry",
+      "children" : [
+         {
+           "name": "extra angry",
+           "size": 50
+	     },
+         {
+           "name": "a little angry",
+           "size": 50
+         }
+       ]
+    }
   ]
 }
 
