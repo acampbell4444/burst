@@ -4,67 +4,61 @@ import d3 from 'd3'
 import rt from './vanillaData'
 import store from '../store'
 
-//import {updateVanillaPartition} from '../reducers/VanillaBurst'
-
 export default class MyGraphComponent extends React.Component {
   constructor(props) {
     super(props)
   }
   componentDidMount() {  
+    let {updateVanillaPartition} = this.props
+    var width = 960,
+        height = 700,
+        radius = Math.min(width, height) / 2
 
-            let {updateVanillaPartition} = this.props
+    var x = d3.scale.linear()
+      .range([0, 2 * Math.PI]);
 
-            var width = 960,
-            height = 700,
-            radius = Math.min(width, height) / 2;
+    var y = d3.scale.linear()
+      .range([0, radius]);
 
+    var color = d3.scale.category20c();
 
-            var x = d3.scale.linear()
-            .range([0, 2 * Math.PI]);
+    var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .append("g")
+    .attr("transform", "translate(" + width / 2 + "," + (height / 2 + 10) + ")");
 
-            var y = d3.scale.linear()
-            .range([0, radius]);
+    var partition = d3.layout.partition()
+    .value(function(d) { return d.size; })
+    .sort(null)
 
-            var color = d3.scale.category20c();
+    var arc = d3.svg.arc()
+    .startAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x))); })
+    .endAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x + d.dx))); })
+    .innerRadius(function(d) { return Math.max(0, y(d.y)); })
+    .outerRadius(function(d) { return Math.max(0, y(d.y + d.dy)); });
 
-            var svg = d3.select("body").append("svg")
-            .attr("width", width)
-            .attr("height", height)
-            .append("g")
-            .attr("transform", "translate(" + width / 2 + "," + (height / 2 + 10) + ")");
+    (function iife() {
+      var g = svg.selectAll("g")
+        .data(partition.nodes(rt))
+        .enter().append("g");
 
-            var partition = d3.layout.partition()
-            .value(function(d) { return d.size; });
+      var path = g.append("path")
+        .attr("d", arc)
+        .style("fill", function(d) { return d.color ? d.color :'white'  })
+        .on("click", click);
 
-            var arc = d3.svg.arc()
-            .startAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x))); })
-            .endAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x + d.dx))); })
-            .innerRadius(function(d) { return Math.max(0, y(d.y)); })
-            .outerRadius(function(d) { return Math.max(0, y(d.y + d.dy)); });
+      var text = g.append("text")
+        .attr("transform", function(d) { return "rotate(" + computeTextRotation(d) + ")"; })
+        .attr("x", function(d) { return y(d.y); })
+        .attr("dx", "6") // margin
+        .attr("dy", ".35em") // vertical-align
+        .text(function(d) { return d.name; });
 
-    
-
-            (function iife() {
-            var g = svg.selectAll("g")
-            .data(partition.nodes(rt))
-            .enter().append("g");
-
-            var path = g.append("path")
-            .attr("d", arc)
-            .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
-            .on("click", click);
-
-            var text = g.append("text")
-            .attr("transform", function(d) { return "rotate(" + computeTextRotation(d) + ")"; })
-            .attr("x", function(d) { return y(d.y); })
-            .attr("dx", "6") // margin
-            .attr("dy", ".35em") // vertical-align
-            .text(function(d) { return d.name; });
-
-            function click(d) {
-            updateVanillaPartition(d)
-            // fade out all text elements
-            text.transition().attr("opacity", 0);
+      function click(d) {
+        updateVanillaPartition(d)
+          // fade out all text elements
+          text.transition().attr("opacity", 0);
 
             path.transition()
             .duration(750)
